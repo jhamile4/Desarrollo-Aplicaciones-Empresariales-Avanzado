@@ -1,0 +1,70 @@
+﻿<Window x:Class="Wpfseman2.ListaIngresosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lista de Ingresos"
+        Height="650"
+        Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA">
+
+    <Grid Margin="40">
+
+        <StackPanel>
+
+            <TextBlock Text="Lista de Ingresos"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="#173F5F"/>
+
+            <TextBlock Text="Ingresos registrados en el sistema"
+                       FontSize="14"
+                       Foreground="#718096"
+                       Margin="0,8,0,30"/>
+
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="25">
+
+                <DataGrid x:Name="dgIngresos"
+                          AutoGenerateColumns="False"
+                          Height="400"
+                          CanUserAddRows="False"
+                          HeadersVisibility="Column">
+
+                    <DataGrid.Columns>
+
+                        <DataGridTextColumn Header="Fecha"
+                                            Binding="{Binding Fecha}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="Placa"
+                                            Binding="{Binding Placa}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="Turno"
+                                            Binding="{Binding Turno}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="Conductor"
+                                            Binding="{Binding Conductor}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="Cliente"
+                                            Binding="{Binding Cliente}"
+                                            Width="*"/>
+
+                        <DataGridTextColumn Header="Peso"
+                                            Binding="{Binding Peso}"
+                                            Width="*"/>
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+
+            </Border>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>

@@ -1,0 +1,62 @@
+﻿<Window x:Class="Wpfseman2.ListaConductoresWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Lista de Conductores"
+        Height="600"
+        Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA">
+
+    <Grid Margin="40">
+
+        <StackPanel>
+
+            <TextBlock Text="Lista de Conductores"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="#173F5F"/>
+
+            <TextBlock Text="Conductores registrados en el sistema"
+                       FontSize="14"
+                       Foreground="#718096"
+                       Margin="0,8,0,30"/>
+
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="25">
+
+                <StackPanel>
+
+                    <DataGrid x:Name="dgConductores"
+                              AutoGenerateColumns="False"
+                              Height="300"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column">
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Nombre del Conductor"
+                                                Binding="{Binding Nombre}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Licencia"
+                                                Binding="{Binding Licencia}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Transporte"
+                                                Binding="{Binding Transporte}"
+                                                Width="*"/>
+
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+
+                </StackPanel>
+
+            </Border>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>

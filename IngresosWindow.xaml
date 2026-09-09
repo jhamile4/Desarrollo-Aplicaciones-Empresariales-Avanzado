@@ -1,0 +1,192 @@
+﻿<Window x:Class="Wpfseman2.IngresosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Registro de Ingresos"
+        Height="650"
+        Width="950"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F7FA">
+
+    <Grid Margin="40">
+
+        <StackPanel>
+
+            <!-- TÍTULO -->
+            <TextBlock Text="Registro de Ingresos"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       Foreground="#173F5F"/>
+
+            <TextBlock Text="Registra la información de ingreso del vehículo"
+                       FontSize="14"
+                       Foreground="#718096"
+                       Margin="0,8,0,30"/>
+
+            <!-- FORMULARIO -->
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="30">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- COLUMNA IZQUIERDA -->
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,15,20">
+
+                        <TextBlock Text="Tipo de Documento"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <ComboBox x:Name="cmbTipoDocumento"
+                                  Height="38"
+                                  Margin="0,7,0,0">
+                            <ComboBoxItem Content="DNI"/>
+                            <ComboBoxItem Content="RUC"/>
+                            <ComboBoxItem Content="Otros"/>
+                        </ComboBox>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,0,15,20">
+
+                        <TextBlock Text="Número de Documento"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <TextBox x:Name="txtNumeroDocumento"
+                                 Height="38"
+                                 Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,0,15,20">
+
+                        <TextBlock Text="Placa"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <TextBox x:Name="txtPlaca"
+                                 Height="38"
+                                 Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3"
+                                Grid.Column="0"
+                                Margin="0,0,15,20">
+
+                        <TextBlock Text="Turno"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <ComboBox x:Name="cmbTurno"
+                                  Height="38"
+                                  Margin="0,7,0,0">
+                            <ComboBoxItem Content="Mañana"/>
+                            <ComboBoxItem Content="Tarde"/>
+                            <ComboBoxItem Content="Noche"/>
+                        </ComboBox>
+
+                    </StackPanel>
+
+                    <!-- COLUMNA DERECHA -->
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="15,0,0,20">
+
+                        <TextBlock Text="Nombre del Conductor"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <TextBox x:Name="txtConductor"
+                                 Height="38"
+                                 Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="15,0,0,20">
+
+                        <TextBlock Text="Nombre del Cliente"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <TextBox x:Name="txtCliente"
+                                 Height="38"
+                                 Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2"
+                                Grid.Column="1"
+                                Margin="15,0,0,20">
+
+                        <TextBlock Text="Fecha y Hora"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <DatePicker x:Name="dpFecha"
+                                    Height="38"
+                                    Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3"
+                                Grid.Column="1"
+                                Margin="15,0,0,20">
+
+                        <TextBlock Text="Peso de Ingreso (kg)"
+                                   FontWeight="SemiBold"
+                                   Foreground="#2D3748"/>
+
+                        <TextBox x:Name="txtPeso"
+                                 Height="38"
+                                 Margin="0,7,0,0"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
+
+            <!-- BOTÓN -->
+
+            <Button x:Name="btnRegistrar"
+                    Content="REGISTRAR INGRESO"
+                    Height="45"
+                    Width="220"
+                    HorizontalAlignment="Right"
+                    Margin="0,25,0,0"
+                    Background="#4FD1C5"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="BtnRegistrar_Click"/>
+
+        </StackPanel>
+
+    </Grid>
+
+</Window>
