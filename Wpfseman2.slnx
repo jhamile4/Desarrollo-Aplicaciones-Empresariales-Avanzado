@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="Wpfseman2.csproj" />
+  <Folder Name="/Semana2/">
+    <Project Path="Semana2/Wpfseman2/Wpfseman2.csproj" />
+  </Folder>
 </Solution>
