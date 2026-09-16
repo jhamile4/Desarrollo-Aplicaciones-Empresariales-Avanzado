@@ -1,0 +1,21 @@
+﻿<Window x:Class="Semana3.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Sistema de Reservas - Menú Principal" Height="350" Width="450"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="30" VerticalAlignment="Center">
+        <TextBlock Text="Menú Principal" FontSize="24" FontWeight="Bold"
+                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
+
+        <Button Content="Aulas (DataTable)" Height="35" Margin="0,5"
+                Click="BtnAulasDataTable_Click"/>
+        <Button Content="Aulas (Objetos)" Height="35" Margin="0,5"
+                Click="BtnAulasObjetos_Click"/>
+        <Button Content="Reservas (DataTable)" Height="35" Margin="0,5"
+                Click="BtnReservasDataTable_Click"/>
+        <Button Content="Reservas (Objetos)" Height="35" Margin="0,5"
+                Click="BtnReservasObjetos_Click"/>
+        <Button Content="Nueva Reserva" Height="35" Margin="0,5"
+                Click="BtnNuevaReserva_Click"/>
+    </StackPanel>
+</Window>
