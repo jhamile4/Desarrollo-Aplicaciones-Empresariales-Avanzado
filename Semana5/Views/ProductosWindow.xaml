@@ -1,0 +1,49 @@
+﻿<Window x:Class="Semana5.Views.ProductosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mantenimiento de Productos" Height="600" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Mantenimiento de Productos" FontSize="18" FontWeight="Bold"
+                   Margin="0,0,0,10" Grid.Row="0"/>
+
+        <UniformGrid Columns="3" Grid.Row="1" Margin="0,0,0,10">
+            <StackPanel Margin="0,0,10,0">
+                <TextBlock Text="Nombre Producto:"/>
+                <TextBox x:Name="txtNombre" Height="28" Margin="0,3,0,8"/>
+                <TextBlock Text="Cantidad por Unidad:"/>
+                <TextBox x:Name="txtCantidadPorUnidad" Height="28" Margin="0,3,0,0"/>
+            </StackPanel>
+            <StackPanel Margin="10,0,10,0">
+                <TextBlock Text="Proveedor:"/>
+                <ComboBox x:Name="cbProveedores" Height="28" Margin="0,3,0,8"
+                          DisplayMemberPath="CompaniaNombre" SelectedValuePath="ProveedorID"/>
+                <TextBlock Text="Categoría:"/>
+                <ComboBox x:Name="cbCategorias" Height="28" Margin="0,3,0,0"
+                          DisplayMemberPath="NombreCategoria" SelectedValuePath="CategoriaID"/>
+            </StackPanel>
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock Text="Precio Unidad:"/>
+                <TextBox x:Name="txtPrecio" Height="28" Margin="0,3,0,8"/>
+                <TextBlock Text="Unidades en Existencia:"/>
+                <TextBox x:Name="txtExistencia" Height="28" Margin="0,3,0,0"/>
+            </StackPanel>
+        </UniformGrid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,0,0,10">
+            <Button Content="Nuevo" Width="80" Height="30" Click="BtnNuevo_Click"/>
+            <Button Content="Guardar" Width="80" Height="30" Margin="10,0,0,0" Click="BtnGuardar_Click"/>
+            <Button Content="Eliminar" Width="80" Height="30" Margin="10,0,0,0" Click="BtnEliminar_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgProductos" Grid.Row="3" AutoGenerateColumns="True"
+                  IsReadOnly="True" SelectionChanged="DgProductos_SelectionChanged"/>
+    </Grid>
+</Window>

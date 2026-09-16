@@ -1,0 +1,39 @@
+﻿<Window x:Class="Semana5.Views.CategoriasWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mantenimiento de Categorías" Height="500" Width="650"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Mantenimiento de Categorías" FontSize="18" FontWeight="Bold"
+                   Margin="0,0,0,10" Grid.Row="0"/>
+
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <TextBlock Text="Nombre Categoría:"/>
+                <TextBox x:Name="txtNombre" Height="28" Margin="0,3,0,8"/>
+                <TextBlock Text="Descripción:"/>
+                <TextBox x:Name="txtDescripcion" Height="28" Margin="0,3,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,0,0,10">
+            <Button Content="Nuevo" Width="80" Height="30" Click="BtnNuevo_Click"/>
+            <Button Content="Guardar" Width="80" Height="30" Margin="10,0,0,0" Click="BtnGuardar_Click"/>
+            <Button Content="Eliminar" Width="80" Height="30" Margin="10,0,0,0" Click="BtnEliminar_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="dgCategorias" Grid.Row="3" AutoGenerateColumns="True"
+                  IsReadOnly="True" SelectionChanged="DgCategorias_SelectionChanged"/>
+    </Grid>
+</Window>
