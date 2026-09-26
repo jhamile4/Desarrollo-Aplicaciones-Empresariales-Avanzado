@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../Semana6.Data/Semana6.Data.csproj" />
+  <Project Path="semana6.csproj" />
+</Solution>
