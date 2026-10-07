@@ -1,0 +1,37 @@
+@model Biblioteca.Web.Models.Libro
+
+<div class="card card-custom p-4 max-w-700 mx-auto" style="max-width: 650px;">
+    <div class="border-bottom pb-3 mb-3 d-flex justify-content-between align-items-center">
+        <h3 class="text-primary m-0 fw-bold"><i class="bi bi-info-circle me-2"></i>Detalle del Libro</h3>
+        <span class="badge bg-success">Activo</span>
+    </div>
+
+    <dl class="row fs-6">
+        <dt class="col-sm-4 text-muted">ID Libro:</dt>
+        <dd class="col-sm-8 fw-bold">#@Model.LibroId</dd>
+
+        <dt class="col-sm-4 text-muted">Título:</dt>
+        <dd class="col-sm-8 text-primary fw-bold">@Model.Titulo</dd>
+
+        <dt class="col-sm-4 text-muted">Autor:</dt>
+        <dd class="col-sm-8"><span class="badge bg-secondary">@(Model.AutorNombre ?? "Sin Autor")</span></dd>
+
+        <dt class="col-sm-4 text-muted">Ejemplares Disponible:</dt>
+        <dd class="col-sm-8"><span class="badge bg-info text-dark">@Model.Ejemplares unidades</span></dd>
+
+        <dt class="col-sm-4 text-muted">Precio:</dt>
+        <dd class="col-sm-8 text-success fw-bold">@(Model.Precio.HasValue ? Model.Precio.Value.ToString("C2") : "Sin Precio")</dd>
+
+        <dt class="col-sm-4 text-muted">Fecha Publicación:</dt>
+        <dd class="col-sm-8">@(Model.FechaPublicacion.HasValue ? Model.FechaPublicacion.Value.ToString("dd/MM/yyyy") : "No especificada")</dd>
+    </dl>
+
+    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+        <a asp-action="Edit" asp-route-id="@Model.LibroId" class="btn btn-warning fw-bold">
+            <i class="bi bi-pencil me-1"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Catálogo
+        </a>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+@model Biblioteca.Web.Models.Libro
+
+<tr>
+    <td class="fw-bold">#@Model.LibroId</td>
+    <td>
+        <span class="text-primary fw-bold">@Model.Titulo</span>
+    </td>
+    <td>
+        <span class="badge bg-secondary"><i class="bi bi-person me-1"></i>@(Model.AutorNombre ?? "Sin Autor")</span>
+    </td>
+    <td class="text-center">
+        <span class="badge bg-info text-dark">@Model.Ejemplares u.</span>
+    </td>
+    <td class="text-end fw-bold text-success">
+        @(Model.Precio.HasValue ? Model.Precio.Value.ToString("C2") : "N/A")
+    </td>
+    <td class="text-center">
+        @(Model.FechaPublicacion.HasValue ? Model.FechaPublicacion.Value.ToString("dd/MM/yyyy") : "-")
+    </td>
+    <td class="text-center">
+        <div class="btn-group btn-group-sm" role="group">
+            <a asp-action="Details" asp-route-id="@Model.LibroId" class="btn btn-outline-info" title="Ver Detalles">
+                <i class="bi bi-eye"></i>
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model.LibroId" class="btn btn-outline-warning" title="Editar">
+                <i class="bi bi-pencil"></i>
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.LibroId" class="btn btn-outline-danger" title="Eliminar (Lógico)">
+                <i class="bi bi-trash"></i>
+            </a>
+        </div>
+    </td>
+</tr>

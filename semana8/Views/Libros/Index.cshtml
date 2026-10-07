@@ -1,0 +1,65 @@
+@model IEnumerable<Biblioteca.Web.Models.Libro>
+
+@{
+    var tituloBusqueda = ViewData["TituloBusqueda"]?.ToString();
+}
+
+<div class="card card-custom p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="text-primary m-0 fw-bold"><i class="bi bi-book-half me-2"></i>Catálogo de Libros Activos</h2>
+            <small class="text-muted">Gestión de libros almacenados en BibliotecaDB</small>
+        </div>
+        <a asp-action="Create" class="btn btn-success fw-bold shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Libro
+        </a>
+    </div>
+
+    <!-- Formulario de búsqueda por título -->
+    <form method="get" asp-action="Index" class="row g-2 mb-4">
+        <div class="col-md-9">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="titulo" value="@tituloBusqueda" class="form-control" placeholder="Buscar libro por título..." />
+            </div>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100 fw-bold"><i class="bi bi-funnel me-1"></i> Buscar</button>
+            @if (!string.IsNullOrEmpty(tituloBusqueda))
+            {
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Limpiar Filtro"><i class="bi bi-x-circle"></i></a>
+            }
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning text-center my-3">
+            <i class="bi bi-exclamation-triangle me-2"></i> No se encontraron libros registrados o coincidentes con el criterio de búsqueda.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle table-bordered shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th class="text-center" style="width: 110px;">Ejemplares</th>
+                        <th class="text-end" style="width: 120px;">Precio</th>
+                        <th class="text-center" style="width: 140px;">Publicación</th>
+                        <th class="text-center" style="width: 140px;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <partial name="_LibroFila" model="item" />
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
