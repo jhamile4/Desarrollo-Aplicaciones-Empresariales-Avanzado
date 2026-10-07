@@ -11,157 +11,70 @@ USE BibliotecaDB;
 GO
 
 -- =============================================
--- TABLAS
+-- TABLAS (Compatibles con Lab07)
 -- =============================================
 
--- 1. Tabla Autores
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Autores]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Autores (
         AutorId INT IDENTITY(1,1) PRIMARY KEY,
-        Nombre VARCHAR(100) NOT NULL,
+        Nombre NVARCHAR(100) NOT NULL,
+        Nacionalidad NVARCHAR(50) NULL,
         Activo BIT NOT NULL DEFAULT 1
     );
 END
 GO
 
--- 2. Tabla Libros
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Libros]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Libros (
         LibroId INT IDENTITY(1,1) PRIMARY KEY,
-        Titulo VARCHAR(150) NOT NULL,
-        AutorId INT NOT NULL,
+        Titulo NVARCHAR(150) NOT NULL,
+        ISBN NVARCHAR(20) NOT NULL UNIQUE,
+        AutorId INT NOT NULL REFERENCES Autores(AutorId),
         Ejemplares INT NOT NULL DEFAULT 1,
-        Precio DECIMAL(10,2) NULL,
-        FechaPublicacion DATETIME NULL,
-        Activo BIT NOT NULL DEFAULT 1,
-        CONSTRAINT FK_Libros_Autores FOREIGN KEY (AutorId) REFERENCES Autores(AutorId)
-    );
-END
-GO
-
--- Asegurar columnas opcionales en Libros si la tabla ya existía
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Libros]') AND name = 'Precio')
-BEGIN
-    ALTER TABLE Libros ADD Precio DECIMAL(10,2) NULL;
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Libros]') AND name = 'FechaPublicacion')
-BEGIN
-    ALTER TABLE Libros ADD FechaPublicacion DATETIME NULL;
-END
-GO
-
--- 3. Tabla Socios
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Socios]') AND type in (N'U'))
-BEGIN
-    CREATE TABLE Socios (
-        SocioId INT IDENTITY(1,1) PRIMARY KEY,
-        Nombre VARCHAR(100) NOT NULL,
-        DNI VARCHAR(15) NOT NULL UNIQUE,
-        Email VARCHAR(100) NULL,
-        Telefono VARCHAR(20) NULL,
         Activo BIT NOT NULL DEFAULT 1
     );
 END
 GO
 
--- Asegurar columna Telefono en Socios si la tabla ya existía
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[Socios]') AND name = 'Telefono')
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Socios]') AND type in (N'U'))
 BEGIN
-    ALTER TABLE Socios ADD Telefono VARCHAR(20) NULL;
+    CREATE TABLE Socios (
+        SocioId INT IDENTITY(1,1) PRIMARY KEY,
+        DNI NVARCHAR(15) NOT NULL UNIQUE,
+        Nombre NVARCHAR(100) NOT NULL,
+        Email NVARCHAR(100) NULL,
+        Activo BIT NOT NULL DEFAULT 1
+    );
 END
 GO
 
--- 4. Tabla Prestamos
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Prestamos]') AND type in (N'U'))
 BEGIN
     CREATE TABLE Prestamos (
         PrestamoId INT IDENTITY(1,1) PRIMARY KEY,
-        SocioId INT NOT NULL,
-        FechaPrestamo DATETIME NOT NULL DEFAULT GETDATE(),
-        FechaLimite DATETIME NOT NULL,
-        Estado VARCHAR(20) NOT NULL DEFAULT 'Prestado',
-        CONSTRAINT FK_Prestamos_Socios FOREIGN KEY (SocioId) REFERENCES Socios(SocioId)
+        SocioId INT NOT NULL REFERENCES Socios(SocioId),
+        FechaPrestamo DATE NOT NULL DEFAULT GETDATE(),
+        FechaLimite DATE NOT NULL,
+        Estado NVARCHAR(20) NOT NULL DEFAULT N'Pendiente'
     );
 END
 GO
 
--- 5. Tabla DetallePrestamo
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DetallePrestamo]') AND type in (N'U'))
 BEGIN
     CREATE TABLE DetallePrestamo (
-        DetalleId INT IDENTITY(1,1) PRIMARY KEY,
-        PrestamoId INT NOT NULL,
-        LibroId INT NOT NULL,
-        Cantidad INT NOT NULL DEFAULT 1,
-        CONSTRAINT FK_Detalle_Prestamos FOREIGN KEY (PrestamoId) REFERENCES Prestamos(PrestamoId),
-        CONSTRAINT FK_Detalle_Libros FOREIGN KEY (LibroId) REFERENCES Libros(LibroId)
+        PrestamoId INT NOT NULL REFERENCES Prestamos(PrestamoId),
+        LibroId INT NOT NULL REFERENCES Libros(LibroId),
+        FechaDevolucion DATE NULL,
+        PRIMARY KEY (PrestamoId, LibroId)
     );
 END
 GO
 
--- Asegurar columna Cantidad en DetallePrestamo si la tabla ya existía
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[DetallePrestamo]') AND name = 'Cantidad')
-BEGIN
-    ALTER TABLE DetallePrestamo ADD Cantidad INT NOT NULL DEFAULT 1;
-END
-GO
-
 -- =============================================
--- DATOS DE PRUEBA INITIALES
--- =============================================
-
-IF NOT EXISTS (SELECT * FROM Autores)
-BEGIN
-    INSERT INTO Autores (Nombre, Activo) VALUES
-    ('Gabriel García Márquez', 1),
-    ('Mario Vargas Llosa', 1),
-    ('Isabel Allende', 1),
-    ('Jorge Luis Borges', 1),
-    ('Miguel de Cervantes', 1);
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM Libros)
-BEGIN
-    INSERT INTO Libros (Titulo, AutorId, Ejemplares, Precio, FechaPublicacion, Activo) VALUES
-    ('Cien años de soledad', 1, 5, 85.00, '1967-05-30', 1),
-    ('La ciudad y los perros', 2, 3, 65.50, '1963-10-15', 1),
-    ('La casa de los espíritus', 3, 4, 72.00, '1982-01-01', 1),
-    ('Ficciones', 4, 2, 50.00, '1944-01-01', 1),
-    ('Don Quijote de la Mancha', 5, 6, 99.90, '1605-01-16', 1);
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM Socios)
-BEGIN
-    INSERT INTO Socios (Nombre, DNI, Email, Telefono, Activo) VALUES
-    ('Juan Pérez Gómez', '72345678', 'juan.perez@email.com', '987654321', 1),
-    ('María López Torres', '45678912', 'maria.lopez@email.com', '912345678', 1),
-    ('Carlos Mendoza Ruiz', '12345678', 'carlos.mendoza@email.com', '998877665', 1);
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM Prestamos)
-BEGIN
-    INSERT INTO Prestamos (SocioId, FechaPrestamo, FechaLimite, Estado) VALUES
-    (1, '2026-10-01', '2026-10-15', 'Prestado'),
-    (2, '2026-09-20', '2026-10-04', 'Vencido'),
-    (3, '2026-10-05', '2026-10-20', 'Prestado');
-
-    INSERT INTO DetallePrestamo (PrestamoId, LibroId, Cantidad) VALUES
-    (1, 1, 1),
-    (2, 2, 1),
-    (3, 3, 1),
-    (3, 4, 1);
-END
-GO
-
--- =============================================
--- PROCEDIMIENTOS ALMACENADOS: AUTORES
+-- PROCEDIMIENTOS ALMACENADOS
 -- =============================================
 
 CREATE OR ALTER PROCEDURE sp_ListarAutoresActivos
@@ -175,10 +88,6 @@ BEGIN
 END
 GO
 
--- =============================================
--- PROCEDIMIENTOS ALMACENADOS: LIBROS
--- =============================================
-
 CREATE OR ALTER PROCEDURE sp_ListarLibrosActivos
 AS
 BEGIN
@@ -186,11 +95,10 @@ BEGIN
     SELECT 
         L.LibroId,
         L.Titulo,
+        ISNULL(L.ISBN, '') AS ISBN,
         L.AutorId,
         A.Nombre AS AutorNombre,
         L.Ejemplares,
-        L.Precio,
-        L.FechaPublicacion,
         L.Activo
     FROM Libros L
     INNER JOIN Autores A ON L.AutorId = A.AutorId
@@ -200,18 +108,17 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_BuscarLibrosPorTitulo
-    @Titulo VARCHAR(150)
+    @Titulo NVARCHAR(150)
 AS
 BEGIN
     SET NOCOUNT ON;
     SELECT 
         L.LibroId,
         L.Titulo,
+        ISNULL(L.ISBN, '') AS ISBN,
         L.AutorId,
         A.Nombre AS AutorNombre,
         L.Ejemplares,
-        L.Precio,
-        L.FechaPublicacion,
         L.Activo
     FROM Libros L
     INNER JOIN Autores A ON L.AutorId = A.AutorId
@@ -228,11 +135,10 @@ BEGIN
     SELECT 
         L.LibroId,
         L.Titulo,
+        ISNULL(L.ISBN, '') AS ISBN,
         L.AutorId,
         A.Nombre AS AutorNombre,
         L.Ejemplares,
-        L.Precio,
-        L.FechaPublicacion,
         L.Activo
     FROM Libros L
     INNER JOIN Autores A ON L.AutorId = A.AutorId
@@ -241,16 +147,21 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_InsertarLibro
-    @Titulo VARCHAR(150),
+    @Titulo NVARCHAR(150),
+    @ISBN NVARCHAR(20) = NULL,
     @AutorId INT,
-    @Ejemplares INT,
-    @Precio DECIMAL(10,2) = NULL,
-    @FechaPublicacion DATETIME = NULL
+    @Ejemplares INT
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Libros (Titulo, AutorId, Ejemplares, Precio, FechaPublicacion, Activo)
-    VALUES (@Titulo, @AutorId, @Ejemplares, @Precio, @FechaPublicacion, 1);
+    
+    IF @ISBN IS NULL OR TRIM(@ISBN) = ''
+    BEGIN
+        SET @ISBN = '978-' + CAST(ABS(CHECKSUM(NEWID())) % 899999 + 100000 AS VARCHAR(20));
+    END
+
+    INSERT INTO Libros (Titulo, ISBN, AutorId, Ejemplares, Activo)
+    VALUES (@Titulo, @ISBN, @AutorId, @Ejemplares, 1);
 
     SELECT SCOPE_IDENTITY() AS LibroId;
 END
@@ -258,20 +169,24 @@ GO
 
 CREATE OR ALTER PROCEDURE sp_ActualizarLibro
     @LibroId INT,
-    @Titulo VARCHAR(150),
+    @Titulo NVARCHAR(150),
+    @ISBN NVARCHAR(20) = NULL,
     @AutorId INT,
-    @Ejemplares INT,
-    @Precio DECIMAL(10,2) = NULL,
-    @FechaPublicacion DATETIME = NULL
+    @Ejemplares INT
 AS
 BEGIN
     SET NOCOUNT ON;
+    
+    IF @ISBN IS NULL OR TRIM(@ISBN) = ''
+    BEGIN
+        SELECT @ISBN = ISNULL(ISBN, '978-000000000') FROM Libros WHERE LibroId = @LibroId;
+    END
+
     UPDATE Libros
     SET Titulo = @Titulo,
+        ISBN = @ISBN,
         AutorId = @AutorId,
-        Ejemplares = @Ejemplares,
-        Precio = @Precio,
-        FechaPublicacion = @FechaPublicacion
+        Ejemplares = @Ejemplares
     WHERE LibroId = @LibroId;
 END
 GO
@@ -287,15 +202,11 @@ BEGIN
 END
 GO
 
--- =============================================
--- PROCEDIMIENTOS ALMACENADOS: SOCIOS
--- =============================================
-
 CREATE OR ALTER PROCEDURE sp_ListarSociosActivos
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT SocioId, Nombre, DNI, Email, Telefono, Activo
+    SELECT SocioId, Nombre, DNI, Email, Activo
     FROM Socios
     WHERE Activo = 1
     ORDER BY SocioId DESC;
@@ -303,22 +214,21 @@ END
 GO
 
 CREATE OR ALTER PROCEDURE sp_InsertarSocio
-    @Nombre VARCHAR(100),
-    @DNI VARCHAR(15),
-    @Email VARCHAR(100) = NULL,
-    @Telefono VARCHAR(20) = NULL
+    @Nombre NVARCHAR(100),
+    @DNI NVARCHAR(15),
+    @Email NVARCHAR(100) = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
-    INSERT INTO Socios (Nombre, DNI, Email, Telefono, Activo)
-    VALUES (@Nombre, @DNI, @Email, @Telefono, 1);
+    INSERT INTO Socios (Nombre, DNI, Email, Activo)
+    VALUES (@Nombre, @DNI, @Email, 1);
 
     SELECT SCOPE_IDENTITY() AS SocioId;
 END
 GO
 
 CREATE OR ALTER PROCEDURE sp_ExisteSocioDNI
-    @DNI VARCHAR(15)
+    @DNI NVARCHAR(15)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -327,10 +237,6 @@ BEGIN
     WHERE DNI = @DNI;
 END
 GO
-
--- =============================================
--- PROCEDIMIENTOS ALMACENADOS: PRESTAMOS / REPORTE
--- =============================================
 
 CREATE OR ALTER PROCEDURE sp_ReportePrestamosPorFechas
     @FechaDesde DATETIME = NULL,

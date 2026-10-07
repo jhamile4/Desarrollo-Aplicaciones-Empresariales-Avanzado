@@ -57,10 +57,9 @@ namespace Biblioteca.Web.Repositorios
             using var connection = CreateConnection();
             var parameters = new DynamicParameters();
             parameters.Add("@Titulo", libro.Titulo);
+            parameters.Add("@ISBN", libro.ISBN);
             parameters.Add("@AutorId", libro.AutorId);
             parameters.Add("@Ejemplares", libro.Ejemplares);
-            parameters.Add("@Precio", libro.Precio);
-            parameters.Add("@FechaPublicacion", libro.FechaPublicacion);
 
             return await connection.ExecuteScalarAsync<int>(
                 "sp_InsertarLibro",
@@ -75,10 +74,9 @@ namespace Biblioteca.Web.Repositorios
             var parameters = new DynamicParameters();
             parameters.Add("@LibroId", libro.LibroId);
             parameters.Add("@Titulo", libro.Titulo);
+            parameters.Add("@ISBN", libro.ISBN);
             parameters.Add("@AutorId", libro.AutorId);
             parameters.Add("@Ejemplares", libro.Ejemplares);
-            parameters.Add("@Precio", libro.Precio);
-            parameters.Add("@FechaPublicacion", libro.FechaPublicacion);
 
             var rows = await connection.ExecuteAsync(
                 "sp_ActualizarLibro",

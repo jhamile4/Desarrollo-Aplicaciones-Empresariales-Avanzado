@@ -8,14 +8,11 @@
     <td>
         <span class="badge bg-secondary"><i class="bi bi-person me-1"></i>@(Model.AutorNombre ?? "Sin Autor")</span>
     </td>
+    <td class="text-center font-monospace small">
+        @(string.IsNullOrEmpty(Model.ISBN) ? "-" : Model.ISBN)
+    </td>
     <td class="text-center">
         <span class="badge bg-info text-dark">@Model.Ejemplares u.</span>
-    </td>
-    <td class="text-end fw-bold text-success">
-        @(Model.Precio.HasValue ? Model.Precio.Value.ToString("C2") : "N/A")
-    </td>
-    <td class="text-center">
-        @(Model.FechaPublicacion.HasValue ? Model.FechaPublicacion.Value.ToString("dd/MM/yyyy") : "-")
     </td>
     <td class="text-center">
         <div class="btn-group btn-group-sm" role="group">

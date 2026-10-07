@@ -21,11 +21,6 @@ namespace Biblioteca.Web.Models
         [Display(Name = "Correo Electrónico")]
         public string? Email { get; set; }
 
-        [Phone(ErrorMessage = "El formato de teléfono no es válido.")]
-        [StringLength(20, ErrorMessage = "El teléfono no puede exceder los 20 caracteres.")]
-        [Display(Name = "Teléfono")]
-        public string? Telefono { get; set; }
-
         public bool Activo { get; set; } = true;
     }
 }

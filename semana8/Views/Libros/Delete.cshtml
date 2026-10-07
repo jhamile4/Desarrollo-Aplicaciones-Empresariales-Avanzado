@@ -20,11 +20,11 @@
         <dt class="col-sm-4 text-muted">Autor:</dt>
         <dd class="col-sm-8"><span class="badge bg-secondary">@(Model.AutorNombre ?? "Sin Autor")</span></dd>
 
+        <dt class="col-sm-4 text-muted">ISBN:</dt>
+        <dd class="col-sm-8 font-monospace">@(string.IsNullOrEmpty(Model.ISBN) ? "N/A" : Model.ISBN)</dd>
+
         <dt class="col-sm-4 text-muted">Ejemplares:</dt>
         <dd class="col-sm-8">@Model.Ejemplares u.</dd>
-
-        <dt class="col-sm-4 text-muted">Precio:</dt>
-        <dd class="col-sm-8">@(Model.Precio.HasValue ? Model.Precio.Value.ToString("C2") : "N/A")</dd>
     </dl>
 
     <form asp-action="Delete" method="post" class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">

@@ -33,7 +33,6 @@ namespace Biblioteca.Web.Repositorios
             parameters.Add("@Nombre", socio.Nombre);
             parameters.Add("@DNI", socio.DNI);
             parameters.Add("@Email", socio.Email);
-            parameters.Add("@Telefono", socio.Telefono);
 
             return await connection.ExecuteScalarAsync<int>(
                 "sp_InsertarSocio",

@@ -11,6 +11,10 @@ namespace Biblioteca.Web.Models
         [Display(Name = "Título")]
         public string Titulo { get; set; } = string.Empty;
 
+        [Display(Name = "ISBN")]
+        [StringLength(20, ErrorMessage = "El ISBN no puede exceder los 20 caracteres.")]
+        public string? ISBN { get; set; }
+
         [Required(ErrorMessage = "Debe seleccionar un autor.")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un autor válido de la lista.")]
         [Display(Name = "Autor")]
@@ -20,18 +24,9 @@ namespace Biblioteca.Web.Models
         public string? AutorNombre { get; set; }
 
         [Required(ErrorMessage = "El número de ejemplares es obligatorio.")]
-        [Range(1, 1000, ErrorMessage = "El número de ejemplares debe estar entre 1 y 1000.")]
+        [Range(0, 1000, ErrorMessage = "El número de ejemplares debe estar entre 0 y 1000.")]
         [Display(Name = "Ejemplares")]
         public int Ejemplares { get; set; } = 1;
-
-        [Range(0, 10000, ErrorMessage = "El precio debe estar entre 0 y 10000.")]
-        [DataType(DataType.Currency)]
-        [Display(Name = "Precio (S/)")]
-        public decimal? Precio { get; set; }
-
-        [DataType(DataType.Date)]
-        [Display(Name = "Fecha de Publicación")]
-        public DateTime? FechaPublicacion { get; set; }
 
         public bool Activo { get; set; } = true;
     }
