@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="hero mb-4">
+    <span class="eyebrow bg-white bg-opacity-25 text-white"><i class="bi bi-stars"></i> Sistema de reservas</span>
+    <h1>Bienvenido a Hotel Aurora</h1>
+    <p class="mb-4">Gestiona habitaciones, consulta la disponibilidad por fechas y registra reservas de tus huéspedes en un solo lugar.</p>
+    <div class="d-flex flex-wrap gap-2 position-relative" style="z-index:1">
+        <a class="btn btn-light" asp-controller="Reservas" asp-action="Disponibles">
+            <i class="bi bi-search"></i> Buscar disponibilidad
+        </a>
+        <a class="btn btn-outline-light" asp-controller="Reservas" asp-action="Create">
+            <i class="bi bi-plus-lg"></i> Nueva reserva
+        </a>
+    </div>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-indigo"><i class="bi bi-door-open"></i></div>
+            <div><div class="stat-valor">@ViewBag.Habitaciones</div><div class="stat-label">Habitaciones activas</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-teal"><i class="bi bi-grid"></i></div>
+            <div><div class="stat-valor">@ViewBag.Tipos</div><div class="stat-label">Tipos de habitación</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-amber"><i class="bi bi-hourglass-split"></i></div>
+            <div><div class="stat-valor">@ViewBag.Pendientes</div><div class="stat-label">Reservas pendientes</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-rose"><i class="bi bi-patch-check"></i></div>
+            <div><div class="stat-valor">@ViewBag.Confirmadas</div><div class="stat-label">Reservas confirmadas</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Habitaciones" asp-action="Index">
+            <div class="stat-icon ic-indigo"><i class="bi bi-door-open"></i></div>
+            <h5>Habitaciones</h5>
+            <p>Registra, edita y da de baja habitaciones. Filtra por tipo.</p>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Reservas" asp-action="Disponibles">
+            <div class="stat-icon ic-teal"><i class="bi bi-calendar-check"></i></div>
+            <h5>Disponibilidad</h5>
+            <p>Indica las fechas y mira qué habitaciones están libres, con el total estimado.</p>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Reservas" asp-action="Index">
+            <div class="stat-icon ic-amber"><i class="bi bi-journal-bookmark"></i></div>
+            <h5>Reservas</h5>
+            <p>Revisa todas las reservas, su estado y total, y cancela las que necesites.</p>
+        </a>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+@model IEnumerable<Habitacion>
+@{
+    ViewData["Title"] = "Habitaciones";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-door-open"></i> Gestión</span>
+        <h1>Habitaciones</h1>
+        <p>Habitaciones activas ordenadas por número.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Nueva habitación</a>
+</div>
+
+<div class="card-soft mb-4">
+    <div class="card-body py-3">
+        <form asp-action="Index" method="get" class="row g-2 align-items-center">
+            <div class="col-auto"><i class="bi bi-funnel text-suave"></i> <span class="fw-semibold">Filtrar por tipo</span></div>
+            <div class="col-sm-5 col-md-4">
+                <select name="idTipo" class="form-select" asp-items="ViewBag.Tipos" onchange="this.form.submit()">
+                    <option value="">Todos los tipos</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-ghost">Aplicar</button>
+                @if (ViewBag.IdTipo != null)
+                {
+                    <a asp-action="Index" class="btn btn-link text-suave">Quitar filtro</a>
+                }
+            </div>
+            <div class="col text-sm-end text-suave small">@Model.Count() habitación(es)</div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card-soft vacio"><i class="bi bi-inbox"></i>No hay habitaciones activas para este tipo.</div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var h in Model)
+        {
+            var tipo = h.IdTipoHabitacionNavigation;
+            <div class="col-sm-6 col-lg-4 col-xl-3">
+                <div class="card-soft room">
+                    <div class="room-top">
+                        <div class="room-num">@h.Numero<small>Piso @h.Piso</small></div>
+                        <span class="chip"><i class="bi bi-tag"></i> @tipo.Nombre</span>
+                    </div>
+                    <div class="room-body">
+                        <div class="room-meta">
+                            <span><i class="bi bi-people"></i> @tipo.Capacidad persona(s)</span>
+                            <span><i class="bi bi-layers"></i> Piso @h.Piso</span>
+                        </div>
+                        <div class="room-precio">S/ @tipo.PrecioNoche.ToString("N2") <span>/ noche</span></div>
+                    </div>
+                    <div class="room-actions">
+                        <a class="btn btn-sm btn-ghost flex-fill" asp-action="Details" asp-route-id="@h.IdHabitacion" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                        <a class="btn btn-sm btn-ghost flex-fill" asp-action="Edit" asp-route-id="@h.IdHabitacion" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a class="btn btn-sm btn-soft-danger flex-fill" asp-action="Delete" asp-route-id="@h.IdHabitacion" title="Dar de baja"><i class="bi bi-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

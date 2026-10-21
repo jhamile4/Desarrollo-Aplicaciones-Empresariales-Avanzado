@@ -1,0 +1,97 @@
+@model IEnumerable<Reserva>
+@{
+    ViewData["Title"] = "Reservas";
+    string? estadoActual = ViewBag.Estado;
+    var estados = new[] { "Pendiente", "Confirmada", "Cancelada", "Finalizada" };
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-journal-bookmark"></i> Reservas</span>
+        <h1>Reservas</h1>
+        <p>Listado de reservas con huésped, habitación, fechas, estado y total.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Nueva reserva</a>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-sm @(estadoActual == null ? "btn-primary" : "btn-ghost")">Todas</a>
+    @foreach (var e in estados)
+    {
+        <a asp-action="Index" asp-route-estado="@e" class="btn btn-sm @(estadoActual == e ? "btn-primary" : "btn-ghost")">@e</a>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card-soft vacio"><i class="bi bi-inbox"></i>No hay reservas para mostrar.</div>
+}
+else
+{
+    <div class="card-soft">
+        <div class="table-responsive">
+            <table class="table tabla">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Huésped</th>
+                        <th>Habitación</th>
+                        <th>Ingreso</th>
+                        <th>Salida</th>
+                        <th class="text-center">Noches</th>
+                        <th>Estado</th>
+                        <th class="text-end">Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        var huesped = r.IdHuespedNavigation;
+                        var habitacion = r.IdHabitacionNavigation;
+                        var noches = r.FechaSalida.DayNumber - r.FechaIngreso.DayNumber;
+                        var total = noches * habitacion.IdTipoHabitacionNavigation.PrecioNoche;
+                        <tr>
+                            <td class="text-suave">@r.IdReserva</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar">@huesped.Nombres[0]@huesped.Apellidos[0]</div>
+                                    <div>
+                                        <div class="fw-bold">@huesped.Nombres @huesped.Apellidos</div>
+                                        <div class="small text-suave">DNI @huesped.Dni</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold">Hab. @habitacion.Numero</div>
+                                <div class="small text-suave">@habitacion.IdTipoHabitacionNavigation.Nombre</div>
+                            </td>
+                            <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                            <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">@noches</td>
+                            <td>
+                                <span class="estado estado-@r.Estado">@r.Estado</span>
+                                @if (!string.IsNullOrEmpty(r.Observaciones))
+                                {
+                                    <i class="bi bi-chat-left-text text-suave ms-1" title="@r.Observaciones"></i>
+                                }
+                            </td>
+                            <td class="text-end fw-bold">S/ @total.ToString("N2")</td>
+                            <td class="text-end">
+                                @if (r.Estado == "Pendiente" || r.Estado == "Confirmada")
+                                {
+                                    <form asp-action="Cancelar" asp-route-id="@r.IdReserva" method="post"
+                                          onsubmit="return confirm('¿Cancelar la reserva #@r.IdReserva?');">
+                                        <button type="submit" class="btn btn-sm btn-soft-danger">
+                                            <i class="bi bi-x-circle"></i> Cancelar
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

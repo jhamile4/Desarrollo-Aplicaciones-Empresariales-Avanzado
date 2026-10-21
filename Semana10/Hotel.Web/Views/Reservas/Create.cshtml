@@ -1,0 +1,91 @@
+@model Reserva
+@{
+    ViewData["Title"] = "Nueva reserva";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-plus-circle"></i> Reservas</span>
+        <h1>Nueva reserva</h1>
+        <p>La reserva se registra con estado <span class="estado estado-Pendiente">Pendiente</span>.</p>
+    </div>
+    <a asp-action="Disponibles" class="btn btn-ghost"><i class="bi bi-calendar-check"></i> Ver disponibilidad</a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card-soft">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger alerta"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="IdHuesped" class="form-label">Huésped</label>
+                            <select asp-for="IdHuesped" class="form-select" asp-items="ViewBag.IdHuesped"
+                                    data-val-required="Selecciona un huésped.">
+                                <option value="">-- Selecciona un huésped --</option>
+                            </select>
+                            <span asp-validation-for="IdHuesped" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="IdHabitacion" class="form-label">Habitación</label>
+                            <select asp-for="IdHabitacion" class="form-select" asp-items="ViewBag.IdHabitacion"
+                                    data-val-required="Selecciona una habitación.">
+                                <option value="">-- Selecciona una habitación --</option>
+                            </select>
+                            <span asp-validation-for="IdHabitacion" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FechaIngreso" class="form-label">Fecha de ingreso</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box-arrow-in-right"></i></span>
+                                <input asp-for="FechaIngreso" type="date" class="form-control"
+                                       value="@Model.FechaIngreso.ToString("yyyy-MM-dd")"
+                                       data-val-required="Ingresa la fecha de ingreso." />
+                            </div>
+                            <span asp-validation-for="FechaIngreso" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FechaSalida" class="form-label">Fecha de salida</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-box-arrow-right"></i></span>
+                                <input asp-for="FechaSalida" type="date" class="form-control"
+                                       value="@Model.FechaSalida.ToString("yyyy-MM-dd")"
+                                       data-val-required="Ingresa la fecha de salida." />
+                            </div>
+                            <span asp-validation-for="FechaSalida" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Observaciones" class="form-label">
+                                Observaciones <span class="chip ms-1">Nuevo campo</span>
+                            </label>
+                            <textarea asp-for="Observaciones" class="form-control" rows="3" maxlength="200"
+                                      placeholder="Ej. Llegada tarde, cama adicional, piso alto..."></textarea>
+                            <div class="d-flex justify-content-between">
+                                <span asp-validation-for="Observaciones" class="text-danger"></span>
+                                <small class="text-suave ms-auto"><span id="contador">0</span>/200</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Registrar reserva</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const obs = document.getElementById('Observaciones');
+        const contador = document.getElementById('contador');
+        const actualizar = () => contador.textContent = obs.value.length;
+        obs.addEventListener('input', actualizar);
+        actualizar();
+    </script>
+}

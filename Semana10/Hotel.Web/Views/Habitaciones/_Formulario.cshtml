@@ -1,0 +1,32 @@
+@model Habitacion
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alerta"></div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Numero" class="form-label">Número de habitación</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-hash"></i></span>
+            <input asp-for="Numero" class="form-control" maxlength="10" placeholder="Ej. 105"
+                   data-val-required="Ingresa el número de la habitación." />
+        </div>
+        <span asp-validation-for="Numero" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Piso" class="form-label">Piso</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-layers"></i></span>
+            <input asp-for="Piso" class="form-control" type="number" min="1"
+                   data-val-required="Ingresa el piso." data-val-number="El piso debe ser un número." />
+        </div>
+        <span asp-validation-for="Piso" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="IdTipoHabitacion" class="form-label">Tipo de habitación</label>
+        <select asp-for="IdTipoHabitacion" class="form-select" asp-items="ViewBag.IdTipoHabitacion"
+                data-val-required="Selecciona un tipo de habitación.">
+            <option value="">-- Selecciona un tipo --</option>
+        </select>
+        <span asp-validation-for="IdTipoHabitacion" class="text-danger"></span>
+    </div>
+</div>

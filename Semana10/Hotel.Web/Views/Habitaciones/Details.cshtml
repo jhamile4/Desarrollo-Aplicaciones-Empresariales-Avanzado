@@ -1,0 +1,68 @@
+@model Habitacion
+@{
+    ViewData["Title"] = $"Habitación {Model.Numero}";
+    var tipo = Model.IdTipoHabitacionNavigation;
+    var reservas = (List<Reserva>)ViewBag.Reservas;
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-eye"></i> Detalle</span>
+        <h1>Habitación @Model.Numero</h1>
+        <p>@tipo.Nombre · Piso @Model.Piso</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Volver</a>
+        <a asp-action="Edit" asp-route-id="@Model.IdHabitacion" class="btn btn-primary"><i class="bi bi-pencil"></i> Editar</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card-soft room">
+            <div class="room-top">
+                <div class="room-num">@Model.Numero<small>Piso @Model.Piso</small></div>
+                <span class="chip"><i class="bi bi-tag"></i> @tipo.Nombre</span>
+            </div>
+            <div class="room-body">
+                <dl class="detalle mb-0">
+                    <dt>Tipo</dt><dd>@tipo.Nombre</dd>
+                    <dt>Capacidad</dt><dd>@tipo.Capacidad persona(s)</dd>
+                    <dt>Precio por noche</dt><dd>S/ @tipo.PrecioNoche.ToString("N2")</dd>
+                    <dt>Estado</dt><dd><span class="estado estado-Confirmada">Activa</span></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card-soft h-100">
+            <div class="card-body pb-2">
+                <h5 class="fw-bold mb-1">Próximas reservas</h5>
+                <p class="text-suave small mb-0">Reservas no canceladas de esta habitación.</p>
+            </div>
+            @if (!reservas.Any())
+            {
+                <div class="vacio"><i class="bi bi-calendar2-x"></i>Sin reservas próximas.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table tabla">
+                        <thead><tr><th>Huésped</th><th>Ingreso</th><th>Salida</th><th>Estado</th></tr></thead>
+                        <tbody>
+                            @foreach (var r in reservas)
+                            {
+                                <tr>
+                                    <td>@r.IdHuespedNavigation.Nombres @r.IdHuespedNavigation.Apellidos</td>
+                                    <td>@r.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                                    <td>@r.FechaSalida.ToString("dd/MM/yyyy")</td>
+                                    <td><span class="estado estado-@r.Estado">@r.Estado</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
