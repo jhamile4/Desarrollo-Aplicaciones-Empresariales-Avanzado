@@ -1,0 +1,70 @@
+@model Asistente
+@{
+    ViewData["Title"] = "Nuevo asistente";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-person-plus"></i> Asistentes</span>
+        <h1>Nuevo asistente</h1>
+        <p>El DNI y el correo no pueden repetirse.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card-soft">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger alerta"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="Nombres" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                <input asp-for="Nombres" class="form-control" placeholder="Ej. María Fernanda López" />
+                            </div>
+                            <span asp-validation-for="Nombres" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Dni" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+                                <input asp-for="Dni" class="form-control" maxlength="8" inputmode="numeric" placeholder="8 dígitos" />
+                            </div>
+                            <span asp-validation-for="Dni" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Telefono" class="form-label">
+                                Teléfono <span class="chip ms-1">Opcional</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                <input asp-for="Telefono" class="form-control" maxlength="9" inputmode="tel" placeholder="Ej. 987654321" />
+                            </div>
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Correo" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Correo" type="email" class="form-control" placeholder="nombre@correo.com" />
+                            </div>
+                            <span asp-validation-for="Correo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

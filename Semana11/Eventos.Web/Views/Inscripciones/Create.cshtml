@@ -1,0 +1,55 @@
+@model Inscripcion
+@{
+    ViewData["Title"] = "Nueva inscripción";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-ticket-perforated"></i> Inscripciones</span>
+        <h1>Nueva inscripción</h1>
+        <p>La inscripción se registra con estado <span class="estado estado-Confirmada">Confirmada</span>.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card-soft">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger alerta"></div>
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="EventoId" class="form-label"></label>
+                            <select asp-for="EventoId" class="form-select" asp-items="ViewBag.EventoId">
+                                <option value="0">-- Selecciona un evento --</option>
+                            </select>
+                            <span asp-validation-for="EventoId" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="AsistenteId" class="form-label"></label>
+                            <select asp-for="AsistenteId" class="form-select" asp-items="ViewBag.AsistenteId">
+                                <option value="0">-- Selecciona un asistente --</option>
+                            </select>
+                            <span asp-validation-for="AsistenteId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-light border mt-4 mb-0 small text-suave">
+                        <i class="bi bi-info-circle"></i>
+                        Se valida que el evento no haya pasado, que el asistente no esté ya inscrito y que haya cupos disponibles.
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a asp-action="Index" class="btn btn-ghost">Cancelar</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Inscribir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

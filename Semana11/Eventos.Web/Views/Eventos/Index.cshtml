@@ -1,0 +1,107 @@
+@model IEnumerable<Eventos.Web.ViewModels.EventoResumen>
+@{
+    ViewData["Title"] = "Eventos";
+    var cultura = new System.Globalization.CultureInfo("es-PE");
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-calendar-event"></i> Gestión</span>
+        <h1>Eventos</h1>
+        <p>Eventos activos ordenados por fecha, con inscritos confirmados y cupos disponibles.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create"><i class="bi bi-plus-lg"></i> Nuevo evento</a>
+</div>
+
+<div class="card-soft mb-4">
+    <div class="card-body py-3">
+        <form asp-action="Index" method="get" class="row g-2 align-items-center">
+            <div class="col-auto"><i class="bi bi-funnel text-suave"></i> <span class="fw-semibold">Filtrar por categoría</span></div>
+            <div class="col-sm-5 col-md-4">
+                <select name="categoriaId" class="form-select" asp-items="ViewBag.Categorias" onchange="this.form.submit()">
+                    <option value="">Todas las categorías</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-ghost">Aplicar</button>
+                @if (ViewBag.CategoriaId != null)
+                {
+                    <a asp-action="Index" class="btn btn-link text-suave">Quitar filtro</a>
+                }
+            </div>
+            <div class="col text-sm-end text-suave small">@Model.Count() evento(s)</div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card-soft vacio"><i class="bi bi-inbox"></i>No hay eventos activos para esta categoría.</div>
+}
+else
+{
+    <div class="card-soft">
+        <div class="table-responsive">
+            <table class="table tabla">
+                <thead>
+                    <tr>
+                        <th>Evento</th>
+                        <th>Categoría</th>
+                        <th>Modalidad</th>
+                        <th class="text-end">Precio</th>
+                        <th style="min-width:170px">Inscritos / Aforo</th>
+                        <th class="text-center">Cupos</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var e = item.Evento;
+                        var porcentaje = e.Aforo == 0 ? 0 : item.Inscritos * 100 / e.Aforo;
+                        <tr class="@(e.Fecha < DateTime.Now ? "pasado" : "")">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="fecha-box">
+                                        <div class="dia">@e.Fecha.Day</div>
+                                        <div class="mes">@e.Fecha.ToString("MMM", cultura)</div>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@e.Titulo</div>
+                                        <div class="small text-suave">
+                                            <i class="bi bi-clock"></i> @e.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                            · <i class="bi bi-geo-alt"></i> @e.Lugar
+                                            @if (e.Fecha < DateTime.Now) { <span class="ms-1 estado estado-Finalizada">Finalizado</span> }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="chip"><i class="bi bi-tag"></i> @e.Categoria?.Nombre</span></td>
+                            <td><span class="estado modalidad-@e.Modalidad">@e.Modalidad</span></td>
+                            <td class="text-end fw-semibold text-nowrap">@(e.Precio == 0 ? "Gratis" : "S/ " + e.Precio.ToString("N2"))</td>
+                            <td>
+                                <div class="small"><strong>@item.Inscritos</strong> / @e.Aforo</div>
+                                <div class="cupos"><span style="width:@porcentaje%"></span></div>
+                            </td>
+                            <td class="text-center">
+                                @if (item.Cupos == 0)
+                                {
+                                    <span class="estado estado-Cancelada">Agotado</span>
+                                }
+                                else
+                                {
+                                    <span class="estado estado-Confirmada">@item.Cupos</span>
+                                }
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-sm btn-ghost" asp-action="Details" asp-route-id="@e.Id" title="Ver detalle"><i class="bi bi-eye"></i></a>
+                                <a class="btn btn-sm btn-ghost" asp-action="Edit" asp-route-id="@e.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-sm btn-soft-danger" asp-action="Delete" asp-route-id="@e.Id" title="Dar de baja"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

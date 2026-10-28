@@ -1,0 +1,57 @@
+@model Evento
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger alerta"></div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" placeholder="Ej. Conferencia de Ciberseguridad" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Fecha" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+            <input asp-for="Fecha" type="datetime-local" class="form-control" value="@Model.Fecha.ToString("yyyy-MM-ddTHH:mm")" />
+        </div>
+        <span asp-validation-for="Fecha" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Lugar" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+            <input asp-for="Lugar" class="form-control" placeholder="Ej. Auditorio principal" />
+        </div>
+        <span asp-validation-for="Lugar" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Aforo" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-people"></i></span>
+            <input asp-for="Aforo" type="number" min="1" max="5000" class="form-control"
+                   data-val-required="Ingresa el aforo." data-val-number="El aforo debe ser un número." />
+        </div>
+        <span asp-validation-for="Aforo" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Precio" class="form-label"></label>
+        <div class="input-group">
+            <span class="input-group-text">S/</span>
+            <input asp-for="Precio" type="number" min="0" step="0.01" class="form-control"
+                   data-val-required="Ingresa el precio." data-val-number="El precio debe ser un número." />
+        </div>
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Modalidad" class="form-label"></label>
+        <select asp-for="Modalidad" class="form-select" asp-items="ViewBag.Modalidad"></select>
+        <span asp-validation-for="Modalidad" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="CategoriaId" class="form-label"></label>
+        <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId">
+            <option value="0">-- Selecciona una categoría --</option>
+        </select>
+        <span asp-validation-for="CategoriaId" class="text-danger"></span>
+    </div>
+</div>

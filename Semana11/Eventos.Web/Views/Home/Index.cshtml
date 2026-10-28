@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+}
+
+<section class="hero mb-4">
+    <span class="eyebrow bg-white bg-opacity-25 text-white"><i class="bi bi-stars"></i> Eventos e inscripciones</span>
+    <h1>Bienvenido a EventHub</h1>
+    <p class="mb-4">Organiza eventos, registra asistentes y controla las inscripciones y el aforo de cada evento en un solo lugar.</p>
+    <div class="d-flex flex-wrap gap-2 position-relative" style="z-index:1">
+        <a class="btn btn-light" asp-controller="Eventos" asp-action="Index">
+            <i class="bi bi-calendar-event"></i> Ver eventos
+        </a>
+        <a class="btn btn-outline-light" asp-controller="Inscripciones" asp-action="Create">
+            <i class="bi bi-plus-lg"></i> Nueva inscripción
+        </a>
+    </div>
+</section>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-indigo"><i class="bi bi-calendar-event"></i></div>
+            <div><div class="stat-valor">@ViewBag.Eventos</div><div class="stat-label">Eventos activos</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-teal"><i class="bi bi-tags"></i></div>
+            <div><div class="stat-valor">@ViewBag.Categorias</div><div class="stat-label">Categorías</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-amber"><i class="bi bi-people"></i></div>
+            <div><div class="stat-valor">@ViewBag.Asistentes</div><div class="stat-label">Asistentes</div></div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card-soft stat">
+            <div class="stat-icon ic-rose"><i class="bi bi-ticket-perforated"></i></div>
+            <div><div class="stat-valor">@ViewBag.Confirmadas</div><div class="stat-label">Inscripciones confirmadas</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Eventos" asp-action="Index">
+            <div class="stat-icon ic-indigo"><i class="bi bi-calendar-event"></i></div>
+            <h5>Eventos</h5>
+            <p>Crea, edita y da de baja eventos. Mira inscritos y cupos disponibles.</p>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Asistentes" asp-action="Index">
+            <div class="stat-icon ic-amber"><i class="bi bi-people"></i></div>
+            <h5>Asistentes</h5>
+            <p>Registra asistentes con DNI y correo únicos.</p>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="card-soft acceso" asp-controller="Inscripciones" asp-action="Index">
+            <div class="stat-icon ic-rose"><i class="bi bi-ticket-perforated"></i></div>
+            <h5>Inscripciones</h5>
+            <p>Inscribe asistentes validando fecha y aforo, y cancela inscripciones.</p>
+        </a>
+    </div>
+</div>

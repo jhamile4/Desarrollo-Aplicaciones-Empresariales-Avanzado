@@ -1,0 +1,61 @@
+@model IEnumerable<Asistente>
+@{
+    ViewData["Title"] = "Asistentes";
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-people"></i> Gestión</span>
+        <h1>Asistentes</h1>
+        <p>Asistentes activos ordenados por nombres.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create"><i class="bi bi-person-plus"></i> Nuevo asistente</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card-soft vacio"><i class="bi bi-inbox"></i>No hay asistentes registrados.</div>
+}
+else
+{
+    <div class="card-soft">
+        <div class="table-responsive">
+            <table class="table tabla">
+                <thead>
+                    <tr>
+                        <th>Asistente</th>
+                        <th>DNI</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        var iniciales = string.Concat(a.Nombres.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => p[0]));
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar">@iniciales</div>
+                                    <div class="fw-bold">@a.Nombres</div>
+                                </div>
+                            </td>
+                            <td>@a.Dni</td>
+                            <td><i class="bi bi-envelope text-suave"></i> @a.Correo</td>
+                            <td>
+                                @if (string.IsNullOrEmpty(a.Telefono))
+                                {
+                                    <span class="text-suave">—</span>
+                                }
+                                else
+                                {
+                                    <span><i class="bi bi-telephone text-suave"></i> @a.Telefono</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

@@ -1,0 +1,71 @@
+@model Evento
+@{
+    ViewData["Title"] = Model.Titulo;
+    var inscritos = (List<Inscripcion>)ViewBag.Inscritos;
+    var cupos = Math.Max(Model.Aforo - inscritos.Count, 0);
+    var porcentaje = Model.Aforo == 0 ? 0 : inscritos.Count * 100 / Model.Aforo;
+}
+
+<div class="page-head">
+    <div>
+        <span class="eyebrow"><i class="bi bi-eye"></i> Detalle del evento</span>
+        <h1>@Model.Titulo</h1>
+        <p><i class="bi bi-clock"></i> @Model.Fecha.ToString("dd/MM/yyyy HH:mm") · <i class="bi bi-geo-alt"></i> @Model.Lugar</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn btn-ghost"><i class="bi bi-arrow-left"></i> Volver</a>
+        <a asp-controller="Inscripciones" asp-action="Create" asp-route-eventoId="@Model.Id" class="btn btn-acento"><i class="bi bi-ticket-perforated"></i> Inscribir</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary"><i class="bi bi-pencil"></i> Editar</a>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card-soft">
+            <div class="card-body">
+                <dl class="detalle mb-0">
+                    <dt>Categoría</dt><dd>@Model.Categoria?.Nombre</dd>
+                    <dt>Modalidad</dt><dd><span class="estado modalidad-@Model.Modalidad">@Model.Modalidad</span></dd>
+                    <dt>Precio</dt><dd>@(Model.Precio == 0 ? "Gratis" : "S/ " + Model.Precio.ToString("N2"))</dd>
+                    <dt>Aforo</dt><dd>@Model.Aforo personas</dd>
+                    <dt>Inscritos confirmados</dt>
+                    <dd>
+                        @inscritos.Count / @Model.Aforo · <span class="text-suave">@cupos cupo(s) libre(s)</span>
+                        <div class="cupos"><span style="width:@porcentaje%"></span></div>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card-soft h-100">
+            <div class="card-body pb-2">
+                <h5 class="fw-bold mb-1">Asistentes inscritos</h5>
+                <p class="text-suave small mb-0">Inscripciones con estado Confirmada.</p>
+            </div>
+            @if (!inscritos.Any())
+            {
+                <div class="vacio"><i class="bi bi-person-x"></i>Todavía no hay inscritos.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table tabla">
+                        <thead><tr><th>Asistente</th><th>DNI</th><th>Correo</th><th>Inscrito el</th></tr></thead>
+                        <tbody>
+                            @foreach (var i in inscritos)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@i.Asistente?.Nombres</td>
+                                    <td>@i.Asistente?.Dni</td>
+                                    <td class="text-suave">@i.Asistente?.Correo</td>
+                                    <td>@i.FechaInscripcion.ToString("dd/MM/yyyy HH:mm")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
