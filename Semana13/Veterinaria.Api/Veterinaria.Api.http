@@ -1,0 +1,213 @@
+### =====================================================================
+### Pruebas de la Veterinaria API (Semana 13)
+### En Visual Studio: clic en "Enviar solicitud" sobre cada bloque.
+### Ejecuta primero Script/VeterinariaDB.sql para partir de los datos de ejemplo.
+### =====================================================================
+
+@base = http://localhost:5030/api
+
+########################  PROPIETARIOS  ########################
+
+### 200 - Listar propietarios
+GET {{base}}/propietarios
+
+### 200 - Filtro por query string (texto en nombre/apellido)
+GET {{base}}/propietarios?buscar=torres
+
+### 200 - Filtro por DNI
+GET {{base}}/propietarios?dni=70123456
+
+### 200 - Obtener por id
+GET {{base}}/propietarios/1
+
+### 404 - Propietario inexistente
+GET {{base}}/propietarios/99
+
+### 200 - Ruta anidada: mascotas de un propietario
+GET {{base}}/propietarios/3/mascotas
+
+### 404 - Ruta anidada con propietario inexistente
+GET {{base}}/propietarios/99/mascotas
+
+### 201 - Crear propietario (devuelve Location: /api/Propietarios/5)
+POST {{base}}/propietarios
+Content-Type: application/json
+
+{
+  "dni": "76543210",
+  "nombres": "Sofía",
+  "apellidos": "Mendoza Ruiz",
+  "telefono": "912345678",
+  "correo": "sofia.mendoza@correo.com"
+}
+
+### 400 - Datos inválidos (DNI corto, nombre vacío, correo mal escrito)
+POST {{base}}/propietarios
+Content-Type: application/json
+
+{
+  "dni": "123",
+  "nombres": "",
+  "apellidos": "X",
+  "telefono": "1",
+  "correo": "no-es-correo"
+}
+
+### 409 - Regla: DNI duplicado
+POST {{base}}/propietarios
+Content-Type: application/json
+
+{
+  "dni": "70123456",
+  "nombres": "Otra",
+  "apellidos": "Persona",
+  "telefono": "911111111"
+}
+
+### 204 - Actualizar propietario
+PUT {{base}}/propietarios/2
+Content-Type: application/json
+
+{
+  "nombres": "Marco Antonio",
+  "apellidos": "Torres Vega",
+  "telefono": "986123456",
+  "correo": "marco.torres@correo.com"
+}
+
+### 404 - Actualizar propietario inexistente
+PUT {{base}}/propietarios/99
+Content-Type: application/json
+
+{
+  "nombres": "Nadie",
+  "apellidos": "Nadie",
+  "telefono": "900000000"
+}
+
+### 409 - Regla: no se elimina un propietario con mascotas
+DELETE {{base}}/propietarios/1
+
+### 204 - Eliminar propietario sin mascotas (Andrés)
+DELETE {{base}}/propietarios/4
+
+### 404 - Eliminar otra vez el mismo
+DELETE {{base}}/propietarios/4
+
+########################  MASCOTAS  ########################
+
+### 200 - Listar mascotas
+GET {{base}}/mascotas
+
+### 200 - Filtros por query string
+GET {{base}}/mascotas?especie=Perro&pesoMax=20
+
+### 200 - Obtener por id (incluye el nombre del propietario)
+GET {{base}}/mascotas/1
+
+### 404 - Mascota inexistente
+GET {{base}}/mascotas/99
+
+### 201 - Crear mascota
+POST {{base}}/mascotas
+Content-Type: application/json
+
+{
+  "nombre": "Coco",
+  "especie": "Conejo",
+  "raza": "Mini Lop",
+  "fechaNacimiento": "2024-02-14",
+  "peso": 1.8,
+  "propietarioId": 2
+}
+
+### 400 - Datos inválidos (nombre vacío, peso 0, propietario 0)
+POST {{base}}/mascotas
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "especie": "Perro",
+  "fechaNacimiento": "2024-01-01",
+  "peso": 0,
+  "propietarioId": 0
+}
+
+### 409 - Regla: máximo 3 mascotas por propietario (Valeria ya tiene 3)
+POST {{base}}/mascotas
+Content-Type: application/json
+
+{
+  "nombre": "Max",
+  "especie": "Perro",
+  "fechaNacimiento": "2022-01-01",
+  "peso": 10,
+  "propietarioId": 3
+}
+
+### 409 - Regla: nombre repetido para el mismo propietario
+POST {{base}}/mascotas
+Content-Type: application/json
+
+{
+  "nombre": "Michi",
+  "especie": "Gato",
+  "fechaNacimiento": "2022-01-01",
+  "peso": 4,
+  "propietarioId": 1
+}
+
+### 409 - Regla: fecha de nacimiento futura
+POST {{base}}/mascotas
+Content-Type: application/json
+
+{
+  "nombre": "Futuro",
+  "especie": "Gato",
+  "fechaNacimiento": "2030-01-01",
+  "peso": 4,
+  "propietarioId": 1
+}
+
+### 204 - Actualizar mascota
+PUT {{base}}/mascotas/2
+Content-Type: application/json
+
+{
+  "nombre": "Michi",
+  "especie": "Gato",
+  "raza": "Siamés",
+  "fechaNacimiento": "2021-07-02",
+  "peso": 4.6,
+  "propietarioId": 1
+}
+
+### 404 - Actualizar mascota inexistente
+PUT {{base}}/mascotas/99
+Content-Type: application/json
+
+{
+  "nombre": "Nadie",
+  "especie": "Gato",
+  "fechaNacimiento": "2021-07-02",
+  "peso": 4,
+  "propietarioId": 1
+}
+
+### 409 - Regla: trasladar la mascota a un propietario que ya tiene 3
+PUT {{base}}/mascotas/1
+Content-Type: application/json
+
+{
+  "nombre": "Firulais",
+  "especie": "Perro",
+  "fechaNacimiento": "2020-03-15",
+  "peso": 28.5,
+  "propietarioId": 3
+}
+
+### 204 - Eliminar mascota (Coco, creada arriba con id 8)
+DELETE {{base}}/mascotas/8
+
+### 404 - Eliminar otra vez la misma
+DELETE {{base}}/mascotas/8
