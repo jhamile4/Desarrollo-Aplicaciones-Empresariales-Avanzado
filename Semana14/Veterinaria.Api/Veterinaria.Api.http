@@ -1,0 +1,255 @@
+### =====================================================================
+### Pruebas de la Veterinaria API con JWT (Semana 14)
+### 1) Ejecuta Script/VeterinariaDB.sql y luego Script/02_Usuarios.sql
+### 2) Ejecuta la API con el perfil https (F5)
+### 3) Envía primero los dos LOGIN: sus tokens se reutilizan abajo
+###    Usuarios de prueba (clave Clave123*):
+###      recepcion@veterinaria.pe   -> Recepcionista
+###      veterinario@veterinaria.pe -> Veterinario
+### =====================================================================
+
+@base = https://localhost:7290/api
+
+########################  AUTH  ########################
+
+### 200 - Login Recepcionista
+# @name loginRecep
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "correo": "recepcion@veterinaria.pe",
+  "clave": "Clave123*"
+}
+
+### 200 - Login Veterinario
+# @name loginVet
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "correo": "veterinario@veterinaria.pe",
+  "clave": "Clave123*"
+}
+
+@tokenRecep = {{loginRecep.response.body.$.token}}
+@tokenVet = {{loginVet.response.body.$.token}}
+
+### 401 - Login con clave incorrecta
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "correo": "recepcion@veterinaria.pe",
+  "clave": "ClaveIncorrecta"
+}
+
+### 401 - Login con correo que no existe (misma respuesta que el anterior)
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{
+  "correo": "noexiste@veterinaria.pe",
+  "clave": "Clave123*"
+}
+
+### 201 - Registro (el servidor asigna el rol Recepcionista)
+POST {{base}}/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "nuevo@veterinaria.pe",
+  "clave": "Clave123*"
+}
+
+### 201 - Registro que intenta mandar "rol": se ignora, queda como Recepcionista
+POST {{base}}/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "pirata@veterinaria.pe",
+  "clave": "Clave123*",
+  "rol": "Veterinario"
+}
+
+### 409 - Registro con correo repetido
+POST {{base}}/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "recepcion@veterinaria.pe",
+  "clave": "Clave123*"
+}
+
+### 400 - Registro con datos inválidos
+POST {{base}}/auth/registro
+Content-Type: application/json
+
+{
+  "correo": "correo-malo",
+  "clave": "123"
+}
+
+### 401 - Perfil sin token
+GET {{base}}/auth/perfil
+
+### 200 - Perfil Recepcionista (datos tomados de los claims del token)
+GET {{base}}/auth/perfil
+Authorization: Bearer {{tokenRecep}}
+
+### 200 - Perfil Veterinario
+GET {{base}}/auth/perfil
+Authorization: Bearer {{tokenVet}}
+
+########################  PÚBLICOS  ########################
+
+### 200 - Listar mascotas sin token (público)
+GET {{base}}/mascotas
+
+### 404 - Mascota inexistente (público)
+GET {{base}}/mascotas/99
+
+########################  SOLO AUTENTICADOS  ########################
+
+### 401 - Propietarios sin token
+GET {{base}}/propietarios
+
+### 200 - Propietarios con token de Veterinario
+GET {{base}}/propietarios?buscar=torres
+Authorization: Bearer {{tokenVet}}
+
+### 200 - Ruta anidada con token de Recepcionista
+GET {{base}}/propietarios/3/mascotas
+Authorization: Bearer {{tokenRecep}}
+
+########################  ROL RECEPCIONISTA  ########################
+
+### 201 - Recepcionista registra un propietario
+POST {{base}}/propietarios
+Authorization: Bearer {{tokenRecep}}
+Content-Type: application/json
+
+{
+  "dni": "76543210",
+  "nombres": "Sofía",
+  "apellidos": "Mendoza Ruiz",
+  "telefono": "912345678",
+  "correo": "sofia.mendoza@correo.com"
+}
+
+### 403 - Veterinario intenta registrar un propietario
+POST {{base}}/propietarios
+Authorization: Bearer {{tokenVet}}
+Content-Type: application/json
+
+{
+  "dni": "71112223",
+  "nombres": "Rosa",
+  "apellidos": "Paredes León",
+  "telefono": "944555666"
+}
+
+### 409 - DNI repetido (regla de negocio)
+POST {{base}}/propietarios
+Authorization: Bearer {{tokenRecep}}
+Content-Type: application/json
+
+{
+  "dni": "70123456",
+  "nombres": "Otra",
+  "apellidos": "Persona",
+  "telefono": "911111111"
+}
+
+### 204 - Recepcionista actualiza un propietario
+PUT {{base}}/propietarios/2
+Authorization: Bearer {{tokenRecep}}
+Content-Type: application/json
+
+{
+  "nombres": "Marco Antonio",
+  "apellidos": "Torres Vega",
+  "telefono": "986123456",
+  "correo": "marco.torres@correo.com"
+}
+
+### 409 - No se elimina un propietario con mascotas
+DELETE {{base}}/propietarios/1
+Authorization: Bearer {{tokenRecep}}
+
+### 204 - Recepcionista elimina un propietario sin mascotas
+DELETE {{base}}/propietarios/4
+Authorization: Bearer {{tokenRecep}}
+
+### 404 - Eliminar otra vez el mismo propietario
+DELETE {{base}}/propietarios/4
+Authorization: Bearer {{tokenRecep}}
+
+########################  ROL VETERINARIO  ########################
+
+### 201 - Veterinario registra una mascota (ambos roles pueden)
+POST {{base}}/mascotas
+Authorization: Bearer {{tokenVet}}
+Content-Type: application/json
+
+{
+  "nombre": "Coco",
+  "especie": "Conejo",
+  "raza": "Mini Lop",
+  "fechaNacimiento": "2024-02-14",
+  "peso": 1.8,
+  "propietarioId": 2
+}
+
+### 409 - Máximo 3 mascotas por propietario
+POST {{base}}/mascotas
+Authorization: Bearer {{tokenVet}}
+Content-Type: application/json
+
+{
+  "nombre": "Max",
+  "especie": "Perro",
+  "fechaNacimiento": "2022-01-01",
+  "peso": 10,
+  "propietarioId": 3
+}
+
+### 403 - Recepcionista intenta actualizar datos clínicos de una mascota
+PUT {{base}}/mascotas/2
+Authorization: Bearer {{tokenRecep}}
+Content-Type: application/json
+
+{
+  "nombre": "Michi",
+  "especie": "Gato",
+  "raza": "Siamés",
+  "fechaNacimiento": "2021-07-02",
+  "peso": 4.6,
+  "propietarioId": 1
+}
+
+### 204 - Veterinario actualiza la mascota
+PUT {{base}}/mascotas/2
+Authorization: Bearer {{tokenVet}}
+Content-Type: application/json
+
+{
+  "nombre": "Michi",
+  "especie": "Gato",
+  "raza": "Siamés",
+  "fechaNacimiento": "2021-07-02",
+  "peso": 4.6,
+  "propietarioId": 1
+}
+
+### 403 - Recepcionista intenta eliminar una mascota
+DELETE {{base}}/mascotas/8
+Authorization: Bearer {{tokenRecep}}
+
+### 204 - Veterinario elimina la mascota creada arriba (id 8)
+DELETE {{base}}/mascotas/8
+Authorization: Bearer {{tokenVet}}
+
+### 404 - Eliminar otra vez la misma mascota
+DELETE {{base}}/mascotas/8
+Authorization: Bearer {{tokenVet}}
