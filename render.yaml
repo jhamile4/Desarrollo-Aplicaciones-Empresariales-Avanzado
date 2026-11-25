@@ -1,0 +1,43 @@
+# Blueprint de Render para el Laboratorio 15 (Semana15): crea los 3 servicios en el plan gratuito.
+# Los valores marcados con sync: false (clave JWT y cadena de conexión) se escriben en el panel
+# de Render al crear el Blueprint; nunca se guardan en el repositorio.
+services:
+  - type: web
+    name: veterinaria-api-jm
+    runtime: docker
+    plan: free
+    dockerContext: ./Semana15
+    dockerfilePath: ./Semana15/Veterinaria.Api/Dockerfile
+    buildFilter:
+      paths: [ "Semana15/**" ]
+    envVars:
+      - key: BaseDatos__Proveedor
+        value: PostgreSql
+      - key: ConnectionStrings__VeterinariaDB
+        sync: false
+      - key: Jwt__Clave
+        sync: false
+
+  - type: web
+    name: veterinaria-vacunas-jm
+    runtime: docker
+    plan: free
+    dockerContext: ./Semana15
+    dockerfilePath: ./Semana15/Veterinaria.Vacunas/Dockerfile
+    buildFilter:
+      paths: [ "Semana15/**" ]
+    envVars:
+      - key: Jwt__Clave
+        sync: false
+
+  - type: web
+    name: veterinaria-gateway-jm
+    runtime: docker
+    plan: free
+    dockerContext: ./Semana15
+    dockerfilePath: ./Semana15/GatewayApi/Dockerfile
+    buildFilter:
+      paths: [ "Semana15/**" ]
+    envVars:
+      - key: Jwt__Clave
+        sync: false

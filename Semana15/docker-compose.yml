@@ -1,0 +1,39 @@
+# Prueba local de la versión "nube": PostgreSQL + los 3 servicios en contenedores.
+# Uso (dentro de Semana15):
+#   $env:JWT_CLAVE = "<la misma clave de 32+ caracteres>"
+#   $env:POSTGRES_CLAVE = "<una clave para la base local>"
+#   docker compose up --build
+# El gateway queda en http://localhost:8100/gateway/...
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: veterinariadb
+      POSTGRES_USER: veterinaria
+      POSTGRES_PASSWORD: ${POSTGRES_CLAVE:?Define POSTGRES_CLAVE}
+    volumes:
+      - ./Script/VeterinariaDB.postgres.sql:/docker-entrypoint-initdb.d/01_veterinaria.sql:ro
+    ports:
+      - "5433:5432"
+
+  api:
+    build: { context: ., dockerfile: Veterinaria.Api/Dockerfile }
+    environment:
+      BaseDatos__Proveedor: PostgreSql
+      ConnectionStrings__VeterinariaDB: "Host=db;Port=5432;Database=veterinariadb;Username=veterinaria;Password=${POSTGRES_CLAVE}"
+      Jwt__Clave: ${JWT_CLAVE:?Define JWT_CLAVE}
+    depends_on: [ db ]
+
+  vacunas:
+    build: { context: ., dockerfile: Veterinaria.Vacunas/Dockerfile }
+    environment:
+      Jwt__Clave: ${JWT_CLAVE:?Define JWT_CLAVE}
+
+  gateway:
+    build: { context: ., dockerfile: GatewayApi/Dockerfile }
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      Jwt__Clave: ${JWT_CLAVE:?Define JWT_CLAVE}
+    ports:
+      - "8100:10000"
+    depends_on: [ api, vacunas ]

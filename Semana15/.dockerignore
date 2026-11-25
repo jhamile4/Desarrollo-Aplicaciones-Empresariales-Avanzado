@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+**/*.docx
+**/Properties/launchSettings.json
+Script/
+README.md
