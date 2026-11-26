@@ -7,6 +7,7 @@ RUN dotnet publish GatewayApi/GatewayApi.csproj -c Release -o /app
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app .
-ENV ASPNETCORE_HTTP_PORTS=10000
+# Escucha en el puerto que asigna Render (variable PORT; 10000 si no existe) y en todas las interfaces
+ENV PORT=10000
 EXPOSE 10000
-ENTRYPOINT ["dotnet", "GatewayApi.dll"]
+ENTRYPOINT ["sh", "-c", "ASPNETCORE_URLS=http://0.0.0.0:${PORT} exec dotnet GatewayApi.dll"]
