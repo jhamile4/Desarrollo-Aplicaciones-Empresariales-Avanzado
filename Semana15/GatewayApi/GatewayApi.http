@@ -1,11 +1,11 @@
-### =====================================================================
+﻿### =====================================================================
 ### Pruebas por el API Gateway (Semana 15). TODO va al puerto del gateway.
 ### Local: arranca Veterinaria.Api (5055), Veterinaria.Vacunas (5056) y GatewayApi (5100).
 ### Nube: cambia @gateway por https://<tu-gateway>.onrender.com
-### Envía primero los dos LOGIN: sus tokens se reutilizan abajo.
+### Envía primero los dos LOGIN: las demás peticiones leen su token automáticamente.
 ### =====================================================================
 
-@gateway = http://localhost:5100
+@gateway = https://veterinaria-gateway-jm.onrender.com
 
 ### 200 - Login Recepcionista (ruta pública)
 # @name loginRecep
@@ -21,8 +21,6 @@ Content-Type: application/json
 
 { "correo": "veterinario@veterinaria.pe", "clave": "Clave123*" }
 
-@tokenRecep = {{loginRecep.response.body.$.token}}
-@tokenVet = {{loginVet.response.body.$.token}}
 
 ### 401 - Login con clave incorrecta
 POST {{gateway}}/gateway/auth/login
@@ -38,7 +36,7 @@ Content-Type: application/json
 
 ### 200 - Perfil con token
 GET {{gateway}}/gateway/auth/perfil
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ### 200 - GET mascotas sin token (público)
 GET {{gateway}}/gateway/mascotas?especie=Perro&pesoMax=20
@@ -57,54 +55,54 @@ Content-Type: application/json
 
 ### 403 - Veterinario intenta registrar un propietario (rol, lo decide la API)
 POST {{gateway}}/gateway/propietarios
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 { "dni": "76543210", "nombres": "Sofía", "apellidos": "Mendoza Ruiz", "telefono": "912345678" }
 
 ### 201 - Recepcionista registra un propietario
 POST {{gateway}}/gateway/propietarios
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 { "dni": "76543210", "nombres": "Sofía", "apellidos": "Mendoza Ruiz", "telefono": "912345678" }
 
 ### 403 - Recepcionista intenta actualizar una mascota
 PUT {{gateway}}/gateway/mascotas/2
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 { "nombre": "Michi", "especie": "Gato", "raza": "Siamés", "fechaNacimiento": "2021-07-02", "peso": 4.6, "propietarioId": 1 }
 
 ### 204 - Veterinario actualiza la mascota
 PUT {{gateway}}/gateway/mascotas/2
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 { "nombre": "Michi", "especie": "Gato", "raza": "Siamés", "fechaNacimiento": "2021-07-02", "peso": 4.6, "propietarioId": 1 }
 
 ### 204 - Recepcionista elimina un propietario sin mascotas
 DELETE {{gateway}}/gateway/propietarios/4
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 409 - No se elimina un propietario con mascotas
 DELETE {{gateway}}/gateway/propietarios/1
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 401 - Microservicio 2 por el gateway, sin token
 GET {{gateway}}/gateway/vacunas
 
 ### 200 - Microservicio 2 por el gateway, con token
 GET {{gateway}}/gateway/vacunas?especie=Gato
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 404 - Vacuna inexistente
 GET {{gateway}}/gateway/vacunas/99
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ### 502 - Detén Veterinaria.Vacunas y envía esta petición
 GET {{gateway}}/gateway/vacunas
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ### 401 - Microservicio 2 DIRECTO (sin gateway) y sin token
 GET http://localhost:5056/api/vacunas

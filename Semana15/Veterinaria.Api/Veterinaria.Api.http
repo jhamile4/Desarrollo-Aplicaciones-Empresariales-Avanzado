@@ -32,8 +32,6 @@ Content-Type: application/json
   "clave": "Clave123*"
 }
 
-@tokenRecep = {{loginRecep.response.body.$.token}}
-@tokenVet = {{loginVet.response.body.$.token}}
 
 ### 401 - Login con clave incorrecta
 POST {{base}}/auth/login
@@ -95,11 +93,11 @@ GET {{base}}/auth/perfil
 
 ### 200 - Perfil Recepcionista (datos tomados de los claims del token)
 GET {{base}}/auth/perfil
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 200 - Perfil Veterinario
 GET {{base}}/auth/perfil
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ########################  PÚBLICOS  ########################
 
@@ -116,17 +114,17 @@ GET {{base}}/propietarios
 
 ### 200 - Propietarios con token de Veterinario
 GET {{base}}/propietarios?buscar=torres
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ### 200 - Ruta anidada con token de Recepcionista
 GET {{base}}/propietarios/3/mascotas
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ########################  ROL RECEPCIONISTA  ########################
 
 ### 201 - Recepcionista registra un propietario
 POST {{base}}/propietarios
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -139,7 +137,7 @@ Content-Type: application/json
 
 ### 403 - Veterinario intenta registrar un propietario
 POST {{base}}/propietarios
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -151,7 +149,7 @@ Content-Type: application/json
 
 ### 409 - DNI repetido (regla de negocio)
 POST {{base}}/propietarios
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -163,7 +161,7 @@ Content-Type: application/json
 
 ### 204 - Recepcionista actualiza un propietario
 PUT {{base}}/propietarios/2
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -175,21 +173,21 @@ Content-Type: application/json
 
 ### 409 - No se elimina un propietario con mascotas
 DELETE {{base}}/propietarios/1
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 204 - Recepcionista elimina un propietario sin mascotas
 DELETE {{base}}/propietarios/4
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 404 - Eliminar otra vez el mismo propietario
 DELETE {{base}}/propietarios/4
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ########################  ROL VETERINARIO  ########################
 
 ### 201 - Veterinario registra una mascota (ambos roles pueden)
 POST {{base}}/mascotas
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -203,7 +201,7 @@ Content-Type: application/json
 
 ### 409 - Máximo 3 mascotas por propietario
 POST {{base}}/mascotas
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -216,7 +214,7 @@ Content-Type: application/json
 
 ### 403 - Recepcionista intenta actualizar datos clínicos de una mascota
 PUT {{base}}/mascotas/2
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -230,7 +228,7 @@ Content-Type: application/json
 
 ### 204 - Veterinario actualiza la mascota
 PUT {{base}}/mascotas/2
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 Content-Type: application/json
 
 {
@@ -244,12 +242,12 @@ Content-Type: application/json
 
 ### 403 - Recepcionista intenta eliminar una mascota
 DELETE {{base}}/mascotas/8
-Authorization: Bearer {{tokenRecep}}
+Authorization: Bearer {{loginRecep.response.body.$.token}}
 
 ### 204 - Veterinario elimina la mascota creada arriba (id 8)
 DELETE {{base}}/mascotas/8
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
 
 ### 404 - Eliminar otra vez la misma mascota
 DELETE {{base}}/mascotas/8
-Authorization: Bearer {{tokenVet}}
+Authorization: Bearer {{loginVet.response.body.$.token}}
