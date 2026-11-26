@@ -94,6 +94,19 @@ Antes de subirlo, todo se probó con **Docker en local**: PostgreSQL 17 y los 3 
 3. **Revisa las direcciones.** Si Render le puso otra dirección a algún servicio (por ejemplo, con un sufijo), actualiza los `Host` y el `BaseUrl` de `GatewayApi/ocelot.Production.json`, y haz commit y push. Render vuelve a desplegar solo.
 4. **Prueba:** `https://<tu-gateway>.onrender.com/gateway/mascotas`. El primer request puede tardar mientras los servicios despiertan.
 
+### Direcciones publicadas
+| Servicio | URL |
+|---|---|
+| Gateway | https://veterinaria-gateway-jm.onrender.com |
+| Veterinaria.Api | https://veterinaria-api-jm.onrender.com |
+| Veterinaria.Vacunas | https://veterinaria-vacunas-jm.onrender.com |
+
+Por ejemplo: https://veterinaria-gateway-jm.onrender.com/gateway/mascotas
+
+### Problemas encontrados al publicar
+- **Cadena de Neon en formato URL** (`postgresql://...`): la API respondía 500. Npgsql necesita el formato **.NET** (`Host=...;Database=...;Username=...;Password=...;SSL Mode=Require`).
+- **Render no detectaba el puerto:** cada contenedor arranca con `ASPNETCORE_URLS=http://0.0.0.0:${PORT}` para escuchar en el puerto que Render asigna.
+
 ---
 
 ## 3. Sustentación (para el video)
@@ -105,7 +118,7 @@ Antes de subirlo, todo se probó con **Docker en local**: PostgreSQL 17 y los 3 
   - En **cada servicio**, que vuelve a validarlo, porque no debe confiar en que todo el tráfico pase por el gateway. Se comprobó: llamar directo al 5056 sin token da 401.
   - El **rol** (403) lo decide la API.
   - Desventaja: la configuración JWT se repite en 3 lugares (y la clave debe ser la misma). Además hay más trabajo por petición, y si se cambia la clave hay que actualizar los tres.
-- **Con el microservicio 2 detenido**, el gateway respondió **502 Bad Gateway** en `/gateway/vacunas`. Todo lo de la API de la S14 (login, mascotas, propietarios) siguió funcionando: el fallo quedó aislado. Desventajas que se notaron:
+- **Con el microservicio 2 detenido**, el gateway respondió **502 Bad Gateway** en `/gateway/vacunas` en local, porque Ocelot no pudo conectarse al servicio. En la nube, al **suspender** el servicio en Render, respondió **503**: el proxy de Render contesta en su lugar con la página *Service Suspended* y Ocelot reenvía esa respuesta. Todo lo de la API de la S14 (login, mascotas, propietarios) siguió funcionando: el fallo quedó aislado. Desventajas que se notaron:
   - **Complejidad:** 3 proyectos, 3 puertos y 3 despliegues.
   - **Autenticación repetida:** la configuración JWT está en 3 lugares.
   - **Depuración más difícil:** un error puede estar en el gateway o en el servicio.
